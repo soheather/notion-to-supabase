@@ -1,9 +1,11 @@
 {
-  "name": "notion-sync",
+  "name": "notion-to-supabase",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "sync": "node api/sync.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@notionhq/client": "^2.3.0",
-    "@supabase/supabase-js": "^2.49.4"
+    "@supabase/supabase-js": "^2.49.4",
+    "dotenv": "^16.4.5"
   }
 }
