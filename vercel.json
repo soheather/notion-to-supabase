@@ -1,8 +1,25 @@
 {
-  "crons": [
+  "version": 2,
+  "framework": "nextjs",
+  "builds": [
     {
-      "path": "/api/sync",
-      "schedule": "0 0 * * *"
+      "src": "next.config.js",
+      "use": "@vercel/next"
     }
-  ]
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
+    "NOTION_API_KEY": "@notion_api_key",
+    "NOTION_DATABASE_ID": "@notion_database_id",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "EMAIL_USER": "@email_user",
+    "EMAIL_PASS": "@email_pass"
+  }
 }
