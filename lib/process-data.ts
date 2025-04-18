@@ -8,6 +8,8 @@ export function processNotionData(notionData: any) {
       metricsMonitoringData: [], // 추가: 사용성 지표 모니터링 여부 데이터
       poData: [],
       swData: [],
+      periodData: [], // 기간별 데이터
+      yearData: [], // 추가: 년도별 데이터
       totalCount: 0,
       activeCount: 0,
       metricsCount: 0,
@@ -48,6 +50,19 @@ export function processNotionData(notionData: any) {
 
   // 사용성 지표 모니터링 여부 데이터 처리 부분 수정
   const monitoringCounts: Record<string, number> = {}
+
+  // 기간별 데이터 처리
+  const periodCounts: Record<string, number> = {
+    "2020 이전": 0,
+    "2020~2021": 0,
+    "2021~2022": 0,
+    "2022~2023": 0,
+    "2023~현재": 0,
+    미지정: 0,
+  }
+
+  // 년도별 데이터 처리 추가
+  const yearCounts: Record<string, number> = {}
 
   // 각 항목 집계
   notionData.results.forEach((item: any) => {
@@ -109,6 +124,37 @@ export function processNotionData(notionData: any) {
     } else {
       monitoringCounts["없음"] = (monitoringCounts["없음"] || 0) + 1
     }
+
+    // 기간 처리
+    const usagePeriod = getPropertyValue(item, "usage_period") || getPropertyValue(item, "사용기간")
+    if (usagePeriod) {
+      // 기간 문자열 분석
+      if (usagePeriod.includes("2020") && usagePeriod.includes("이전")) {
+        periodCounts["2020 이전"] += 1
+      } else if (usagePeriod.includes("2020") && usagePeriod.includes("2021")) {
+        periodCounts["2020~2021"] += 1
+      } else if (usagePeriod.includes("2021") && usagePeriod.includes("2022")) {
+        periodCounts["2021~2022"] += 1
+      } else if (usagePeriod.includes("2022") && usagePeriod.includes("2023")) {
+        periodCounts["2022~2023"] += 1
+      } else if (usagePeriod.includes("2023") || usagePeriod.includes("현재")) {
+        periodCounts["2023~현재"] += 1
+      } else {
+        periodCounts["미지정"] += 1
+      }
+    } else {
+      periodCounts["미지정"] += 1
+    }
+
+    // Year 처리 추가
+    const year = getPropertyValue(item, "Year")
+    if (year) {
+      // 년도 값이 있는 경우 해당 년도 카운트 증가
+      yearCounts[year] = (yearCounts[year] || 0) + 1
+    } else {
+      // 년도 값이 없는 경우 '미지정' 카운트 증가
+      yearCounts["미지정"] = (yearCounts["미지정"] || 0) + 1
+    }
   })
 
   // 도넛 차트 데이터 형식으로 변환
@@ -141,6 +187,26 @@ export function processNotionData(notionData: any) {
     value,
   }))
 
+  // 기간별 바 차트 데이터
+  const periodData = Object.entries(periodCounts).map(([name, value]) => ({
+    name,
+    value,
+  }))
+
+  // 년도별 바 차트 데이터 추가
+  const yearData = Object.entries(yearCounts)
+    .map(([name, value]) => ({
+      name,
+      value,
+    }))
+    .sort((a, b) => {
+      // '미지정'은 항상 마지막에 위치
+      if (a.name === "미지정") return 1
+      if (b.name === "미지정") return -1
+      // 나머지는 년도 순으로 정렬 (문자열 비교)
+      return a.name.localeCompare(b.name)
+    })
+
   // 반환 객체에 monitoringData 추가
   const monitoringData = Object.entries(monitoringCounts).map(([name, value]) => ({
     name,
@@ -160,7 +226,7 @@ export function processNotionData(notionData: any) {
     .filter(([name]) => name !== "없음")
     .reduce((sum, [_, value]) => sum + value, 0)
 
-  // return 문에 monitoringData 추가
+  // return 문에 yearData 추가
   return {
     statusData,
     metricsData,
@@ -168,6 +234,8 @@ export function processNotionData(notionData: any) {
     monitoringData,
     poData,
     swData,
+    periodData,
+    yearData,
     totalCount: notionData.results.length,
     activeCount,
     metricsCount,
@@ -196,6 +264,8 @@ function getPropertyValue(item: any, propertyName: string): string | null {
         return translateYesNo(property.people?.[0]?.name) || null
       case "checkbox":
         return property.checkbox ? "있음" : "없음"
+      case "number":
+        return property.number !== null ? property.number.toString() : null
       default:
         return null
     }

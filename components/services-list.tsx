@@ -18,6 +18,7 @@ type ServiceItem = {
   po: string
   sw: string
   lastUpdated: string
+  year: string // 추가된 year 필드
 }
 
 export function ServicesList({ notionData }: { notionData: any }) {
@@ -28,8 +29,8 @@ export function ServicesList({ notionData }: { notionData: any }) {
     key: keyof ServiceItem | null
     direction: "ascending" | "descending"
   }>({
-    key: null,
-    direction: "ascending",
+    key: "year",
+    direction: "descending",
   })
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export function ServicesList({ notionData }: { notionData: any }) {
           lastUpdated: item.last_edited_time
             ? new Date(item.last_edited_time).toLocaleDateString("ko-KR")
             : new Date().toLocaleDateString("ko-KR"),
+          year: getPropertyValue(item, "Year") || "미지정", // Year 필드 추출
         }
       })
       setServices(processedData)
@@ -274,6 +276,14 @@ export function ServicesList({ notionData }: { notionData: any }) {
                   />
                 </div>
               </TableHead>
+              <TableHead className="font-medium text-[#4b4b63]">
+                <div className="flex items-center cursor-pointer" onClick={() => requestSort("year")}>
+                  Year
+                  <ArrowUpDown
+                    className={`ml-1 h-4 w-4 transition-opacity ${sortConfig.key === "year" ? "opacity-100 text-[#a5a6f6]" : "opacity-40"}`}
+                  />
+                </div>
+              </TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -287,6 +297,7 @@ export function ServicesList({ notionData }: { notionData: any }) {
                   <TableCell>{getStatusBadge(service.status)}</TableCell>
                   <TableCell className="text-[#6e6e85]">{service.po}</TableCell>
                   <TableCell className="text-[#6e6e85]">{service.sw}</TableCell>
+                  <TableCell className="text-[#6e6e85]">{service.year}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

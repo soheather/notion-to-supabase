@@ -8,7 +8,8 @@ import { MetricsBarChart } from "./metrics-bar-chart"
 import { POBarChart } from "./po-bar-chart"
 import { SWBarChart } from "./sw-bar-chart"
 import { MakeStackedChart } from "./make-stacked-chart"
-import { Loader2, BarChart3, LineChart, Bell, Users, Code, Layers, AlertTriangle } from "lucide-react"
+import { YearBarChart } from "./year-bar-chart"
+import { Loader2, BarChart3, LineChart, Bell, Users, Code, Layers, AlertTriangle, Calendar } from "lucide-react"
 
 // Import the COLORS constant from StatusDonutChart
 import { COLORS as DONUT_COLORS } from "./status-donut-chart"
@@ -37,6 +38,8 @@ export default function Dashboard({ notionData }: { notionData: any }) {
           monitoringData: [],
           poData: [],
           swData: [],
+          periodData: [],
+          yearData: [],
           totalCount: 0,
           activeCount: 0,
           metricsCount: 0,
@@ -91,6 +94,8 @@ export default function Dashboard({ notionData }: { notionData: any }) {
           return translateYesNo(property.people?.[0]?.name) || null
         case "checkbox":
           return property.checkbox ? "있음" : "없음"
+        case "number":
+          return property.number !== null ? property.number.toString() : null
         default:
           return null
       }
@@ -193,6 +198,17 @@ export default function Dashboard({ notionData }: { notionData: any }) {
         </div>
       </div>
 
+      {/* 년도별 프로젝트 수 차트 추가 */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-[#a5a6f6]" />
+            <h2 className="text-xl font-bold text-[#2d2d3d]">년도별 프로젝트 수</h2>
+          </div>
+        </div>
+        <YearBarChart data={processedData.yearData} />
+      </div>
+
       {/* 서비스 구현 방식 차트 추가 */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex justify-between items-center mb-4">
@@ -223,7 +239,13 @@ export default function Dashboard({ notionData }: { notionData: any }) {
             value="personnel"
             className="rounded-md data-[state=active]:bg-white data-[state=active]:text-[#2d2d3d] data-[state=active]:shadow-sm"
           >
-            담당자 현황
+            Personnel
+          </TabsTrigger>
+          <TabsTrigger
+            value="timeline"
+            className="rounded-md data-[state=active]:bg-white data-[state=active]:text-[#2d2d3d] data-[state=active]:shadow-sm"
+          >
+            Timeline
           </TabsTrigger>
         </TabsList>
 
@@ -331,6 +353,20 @@ export default function Dashboard({ notionData }: { notionData: any }) {
               <div className="h-[300px] flex justify-start">
                 <SWBarChart data={processedData.swData} />
               </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="timeline" className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-[#a5a6f6]" />
+                <h3 className="text-lg font-bold text-[#2d2d3d]">년도별 프로젝트 분포</h3>
+              </div>
+            </div>
+            <div className="h-[300px] flex justify-start">
+              <YearBarChart data={processedData.yearData} />
             </div>
           </div>
         </TabsContent>

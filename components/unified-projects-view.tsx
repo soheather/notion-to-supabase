@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import ProjectsList from "@/components/projects-list"
-import { Loader2, AlertTriangle, Database, RefreshCw, Zap } from "lucide-react"
+import { Loader2, AlertTriangle, Database, RefreshCw } from "lucide-react"
 import { RefreshProjectsButton } from "@/components/refresh-projects-button"
 import { SyncStatus } from "@/components/sync-status"
 import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
 import { checkProjectsTable, getCreateProjectsTableSQL } from "@/app/actions/projects"
 import { useRouter } from "next/navigation"
 
@@ -16,7 +15,7 @@ export function UnifiedProjectsView() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
-  const [realtimeEnabled, setRealtimeEnabled] = useState(false)
+  const [realtimeEnabled, setRealtimeEnabled] = useState(true)
   const [tableExists, setTableExists] = useState(true)
   const [createTableSQL, setCreateTableSQL] = useState("")
   const router = useRouter()
@@ -232,22 +231,9 @@ export function UnifiedProjectsView() {
           <h1 className="text-3xl font-bold text-[#2d2d3d]">프로젝트 리스트</h1>
           <div className="flex items-center gap-2 mt-1">
             <SyncStatus />
-            {lastUpdated && (
-              <span className="text-xs text-[#6e6e85]">
-                마지막 업데이트: {lastUpdated}
-                {realtimeEnabled && " (실시간 동기화 활성화됨)"}
-              </span>
-            )}
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Switch checked={realtimeEnabled} onCheckedChange={setRealtimeEnabled} id="realtime-mode" />
-            <label htmlFor="realtime-mode" className="text-sm font-medium flex items-center cursor-pointer">
-              <Zap className={`h-4 w-4 mr-1 ${realtimeEnabled ? "text-[#a5a6f6]" : "text-gray-400"}`} />
-              실시간 모드
-            </label>
-          </div>
           <RefreshProjectsButton />
         </div>
       </div>
