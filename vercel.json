@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node-npm"
+    },
+    {
+      "src": "api/og-image.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/cron/sync-projects.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/og-image",
+      "dest": "/api/og-image.js"
+    },
+    {
+      "src": "/api/cron/sync-projects",
+      "dest": "/api/cron/sync-projects.js"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/sync-projects",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}

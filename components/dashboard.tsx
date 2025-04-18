@@ -342,4 +342,3 @@ export default function Dashboard({ notionData }: { notionData: any }) {
     </div>
   )
 }
-

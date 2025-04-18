@@ -110,4 +110,3 @@ export function MakeStackedChart({ data }: { data: any[] }) {
     </div>
   )
 }
-

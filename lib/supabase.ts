@@ -86,4 +86,3 @@ VALUES
   ('모바일 앱 서비스', '/placeholder.svg?height=300&width=400', '사용자 친화적인 모바일 앱 서비스', '사용자 경험을 최우선으로 고려한 모바일 앱 서비스입니다.', '2021~현재', '파트너사', 'https://example.com/mobile-app'),
   ('데이터 분석 플랫폼', '/placeholder.svg?height=300&width=400', '빅데이터 기반 분석 플랫폼', '대용량 데이터를 실시간으로 분석하고 인사이트를 제공하는 플랫폼입니다.', '2023~현재', '사내IT팀', 'https://example.com/data-analytics');
 `
-

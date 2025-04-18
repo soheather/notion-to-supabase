@@ -77,4 +77,3 @@ export async function fetchNotionData(options?: { forceRefresh?: boolean }) {
     options,
   )
 }
-

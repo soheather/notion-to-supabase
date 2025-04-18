@@ -74,4 +74,3 @@ export function POBarChart({ data }: { data: any[] }) {
     </div>
   )
 }
-

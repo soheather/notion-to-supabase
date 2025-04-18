@@ -328,4 +328,3 @@ export function ServicesList({ notionData }: { notionData: any }) {
 
 // 명시적으로 기본 내보내기 추가
 export default ServicesList
-

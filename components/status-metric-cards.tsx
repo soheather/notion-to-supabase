@@ -60,4 +60,3 @@ function MetricCard({
     </div>
   )
 }
-

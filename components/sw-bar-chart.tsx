@@ -78,4 +78,3 @@ export function SWBarChart({ data }: { data: any[] }) {
     </div>
   )
 }
-

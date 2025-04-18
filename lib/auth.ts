@@ -51,4 +51,3 @@ export async function getSession() {
   }
   return data.session
 }
-
