@@ -129,7 +129,7 @@ export function ProjectStageChart({ data }: ProjectStageChartProps) {
             <LabelList
               dataKey="진행완료Percentage"
               position="center"
-              formatter={(value: number) => `${value}%`}
+              formatter={(value: number) => (value > 10 ? `${value}%` : "")}
               style={{ fill: "#4b4b63", fontWeight: "bold", fontSize: 12 }}
             />
           </Bar>
@@ -142,3 +142,4 @@ export function ProjectStageChart({ data }: ProjectStageChartProps) {
     </div>
   )
 }
+

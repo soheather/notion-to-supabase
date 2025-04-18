@@ -3,7 +3,6 @@ import ProjectsList from "@/components/projects-list"
 import { AlertTriangle, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { RefreshProjectsButton } from "@/components/refresh-projects-button"
-import { SyncStatus } from "@/components/sync-status"
 
 export const dynamic = "force-dynamic" // 항상 동적으로 렌더링
 export const revalidate = 0 // 캐시 비활성화
@@ -101,10 +100,7 @@ export default async function ProjectsPage() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-[#2d2d3d]">프로젝트 리스트</h1>
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-[#6e6e85]">Supabase 데이터베이스와 실시간 동기화</p>
-                <SyncStatus />
-              </div>
+              <p className="text-[#6e6e85] mt-1">Supabase 데이터베이스와 실시간 동기화</p>
             </div>
             <RefreshProjectsButton />
           </div>
@@ -136,3 +132,4 @@ export default async function ProjectsPage() {
     )
   }
 }
+

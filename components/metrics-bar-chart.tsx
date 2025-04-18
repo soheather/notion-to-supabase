@@ -85,3 +85,4 @@ function translateYesNo(value: string): string {
   if (value.toLowerCase() === "no") return "없음"
   return value
 }
+

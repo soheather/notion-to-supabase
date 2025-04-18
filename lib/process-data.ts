@@ -214,3 +214,4 @@ function translateYesNo(value: string | null | undefined): string | null | undef
 
   return value
 }
+
