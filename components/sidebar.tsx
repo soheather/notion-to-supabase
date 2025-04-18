@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Home, FileText, Menu, ListTodo, LogOut, User } from "lucide-react"
+import { Home, FileText, Menu, ListTodo, LogOut, User, FileBarChart } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
@@ -65,7 +65,14 @@ export function Sidebar() {
               icon={<ListTodo size={20} />}
               title="프로젝트 리스트"
               href="/projects"
-              active={pathname === "/projects"}
+              active={pathname.startsWith("/projects")}
+              collapsed={collapsed}
+            />
+            <MenuItem
+              icon={<FileBarChart size={20} />}
+              title="주간 리포트"
+              href="/reports"
+              active={pathname === "/reports"}
               collapsed={collapsed}
             />
           </ul>

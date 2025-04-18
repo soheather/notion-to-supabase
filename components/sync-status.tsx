@@ -60,7 +60,7 @@ export function SyncStatus() {
           <div className="flex items-center">
             <Badge variant="outline" className="flex items-center gap-1 px-2 py-1 bg-[#f8f8fc]">
               <Clock className="h-3 w-3 text-[#a5a6f6]" />
-              <span className="text-xs">자동 동기화</span>
+              <span className="text-xs">매일 09:00 기준 자동 동기화</span>
             </Badge>
           </div>
         </TooltipTrigger>
