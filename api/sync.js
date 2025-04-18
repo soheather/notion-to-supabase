@@ -83,29 +83,36 @@ async function trackChanges(oldData, newData) {
 
 export async function syncData() {
   try {
+    // 1주일 전 날짜 계산
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
     const response = await notion.databases.query({
-      database_id: DATABASE_ID,
-      sorts: [
-        {
-          property: "title",
-          direction: "ascending"
-        }
-      ]
+      database_id: DATABASE_ID
     });
 
-    console.log(`📊 Found ${response.results.length} projects in Notion`);
+    // 최근 1주일 내 수정된 항목만 필터링
+    const recentChanges = response.results.filter(page => {
+      const lastEditTime = new Date(page.last_edited_time);
+      return lastEditTime > oneWeekAgo;
+    });
 
-    for (const page of response.results) {
+    console.log(`\n📅 Changes in the last week (${oneWeekAgo.toLocaleDateString()} - ${new Date().toLocaleDateString()}):`);
+    console.log(`Found ${recentChanges.length} modified projects\n`);
+
+    for (const page of recentChanges) {
       const props = page.properties;
-
-      // 데이터 추출
       const title = props.title?.title?.[0]?.plain_text || '';
+      const lastEditTime = new Date(page.last_edited_time).toLocaleString();
       
-      // title이 없는 경우 건너뛰기
       if (!title) {
         console.log('⚠️ Skipping project with empty title');
         continue;
       }
+
+      console.log(`📝 ${title}`);
+      console.log(`   Last edited: ${lastEditTime}`);
+      console.log('');
 
       const projectData = {
         title,
