@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import Loading from "./loading"
 
 export const dynamic = "force-dynamic"
-export const revalidate = 300 // 5분마다 재검증
+export const revalidate = 60 // 1분마다 재검증 (기존 300에서 60으로 변경)
 
 export default async function Home() {
   try {

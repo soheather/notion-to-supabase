@@ -3,8 +3,8 @@
 // 메모리 캐시 객체
 const CACHE: Record<string, { data: any; timestamp: number }> = {}
 
-// 캐시 만료 시간 (5분)
-const CACHE_EXPIRY = 5 * 60 * 1000
+// 캐시 만료 시간 (1분)
+const CACHE_EXPIRY = 1 * 60 * 1000 // 기존 5분에서 1분으로 변경
 
 /**
  * 데이터를 캐시하고 가져오는 함수
