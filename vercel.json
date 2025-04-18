@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/node-npm"
+      "use": "@vercel/node"
     },
     {
       "src": "api/og-image.js",
