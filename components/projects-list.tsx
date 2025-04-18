@@ -22,9 +22,9 @@ import { fetchProjectsData } from "@/app/actions/projects"
 // 필요한 import 추가
 // import { Trash2 } from 'lucide-react'
 // 상단에 import 부분에 추가할 내용
-import { BarChart3, CheckCircle2, Clock, ListChecks, PieChart } from "lucide-react"
+// import { BarChart3, CheckCircle2, Clock, ListChecks, PieChart } from 'lucide-react'
 // 차트 컴포넌트 import
-import { ProjectStageChart } from "./project-stage-chart"
+// import { ProjectStageChart } from "./project-stage-chart"
 
 // ProjectItem 타입 정의를 테이블 구조와 일치시킵니다
 type ProjectItem = {
@@ -72,9 +72,9 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
 
   // 상태 변수 추가 (컴포넌트 시작 부분에 추가)
-  const [showPlanningProjects, setShowPlanningProjects] = useState(false)
-  const [showInProgressProjects, setShowInProgressProjects] = useState(false)
-  const [showCompletedProjects, setShowCompletedProjects] = useState(false)
+  // const [showPlanningProjects, setShowPlanningProjects] = useState(false)
+  // const [showInProgressProjects, setShowInProgressProjects] = useState(false)
+  // const [showCompletedProjects, setShowCompletedProjects] = useState(false)
 
   // projects 상태가 변경될 때마다 통계 데이터 업데이트
   useEffect(() => {
@@ -106,13 +106,21 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
           title = `프로젝트 ${title}`
         }
 
+        // 회사명 정규화
+        let company = item.company || "-"
+
+        // GS E&R 관련 회사명 통합
+        if (company.includes("GS E&R") || company.includes("GS동해전력") || company.includes("포천그린에너지")) {
+          company = "GS E&R"
+        }
+
         return {
           id: item.id || `id-${Math.random().toString(36).substr(2, 9)}`,
           created_at: formatDate(item.created_at) || "-",
           status: item.status || "미정",
           stage: item.stage || "-",
           pm: item.pm || "-",
-          company: item.company || "-",
+          company: company,
           title: title,
           training: Boolean(item.training),
           stakeholder: item.stakeholder || "-",
@@ -162,13 +170,21 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
             title = `프로젝트 ${title}`
           }
 
+          // 회사명 정규화
+          let company = item.company || "-"
+
+          // GS E&R 관련 회사명 통합
+          if (company.includes("GS E&R") || company.includes("GS동해전력") || company.includes("포천그린에너지")) {
+            company = "GS E&R"
+          }
+
           return {
             id: item.id || `id-${Math.random().toString(36).substr(2, 9)}`,
             created_at: formatDate(item.created_at) || "-",
             status: item.status || "미정",
             stage: item.stage || "-",
             pm: item.pm || "-",
-            company: item.company || "-",
+            company: company,
             title: title,
             training: Boolean(item.training),
             stakeholder: item.stakeholder || "-",
@@ -498,7 +514,7 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
   return (
     <div className="space-y-6">
       {/* 프로젝트 현황 요약 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
           <div className="rounded-full bg-[#f0f0ff] p-3 mr-4">
             <BarChart3 className="h-6 w-6 text-[#7b7bf7]" />
@@ -567,9 +583,9 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
             <p className="text-2xl font-bold text-[#2d2d3d]">{projectStats.completedProjects}개</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      {showPlanningProjects && projectStats.planningProjectsList.length > 0 && (
+      {/* {showPlanningProjects && projectStats.planningProjectsList.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex items-center mb-4">
             <Clock className="h-5 w-5 text-[#a17f22] mr-2" />
@@ -747,16 +763,16 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
             </table>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* 프로젝트 단계별 분포 차트 */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      {/* <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center mb-6">
           <PieChart className="h-6 w-6 text-[#a5a6f6] mr-2" />
           <h2 className="text-xl font-bold text-[#2d2d3d]">프로젝트 단계별 분포</h2>
         </div>
         <ProjectStageChart data={stageDistributionData} />
-      </div>
+      </div> */}
 
       {/* 기존 프로젝트 리스트 테이블 */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -772,20 +788,6 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
               />
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-10 border-[#e9e9f2] text-[#6e6e85] hover:text-[#4b4b63] bg-[#f8f8fc] hover:bg-[#f0f0f8] rounded-lg"
-                onClick={() => {
-                  console.log("테이블 내 업데이트 버튼 클릭")
-                  refreshData()
-                }}
-                disabled={refreshing}
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
-                {refreshing ? "업데이트 중..." : "업데이트"}
-              </Button>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button

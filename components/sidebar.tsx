@@ -49,14 +49,14 @@ export function Sidebar() {
           <ul className="space-y-2">
             <MenuItem
               icon={<Home size={20} />}
-              title="대시보드"
+              title="디지털 서비스 운영 현황"
               href="/"
               active={pathname === "/"}
               collapsed={collapsed}
             />
             <MenuItem
               icon={<FileText size={20} />}
-              title="디지털 프로덕트 리스트"
+              title="디지털 서비스 리스트"
               href="/services"
               active={pathname === "/services"}
               collapsed={collapsed}

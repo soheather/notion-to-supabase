@@ -9,6 +9,9 @@ import { SyncStatus } from "@/components/sync-status"
 import { Button } from "@/components/ui/button"
 import { checkProjectsTable, getCreateProjectsTableSQL } from "@/app/actions/projects"
 import { useRouter } from "next/navigation"
+import { CompanyFilter } from "@/components/company-filter"
+import { ProjectSummaryCards } from "@/components/project-summary-cards"
+import { ProjectDistributionChart } from "@/components/project-distribution-chart"
 
 export function UnifiedProjectsView() {
   const [projectsData, setProjectsData] = useState<any>(null)
@@ -18,6 +21,9 @@ export function UnifiedProjectsView() {
   const [realtimeEnabled, setRealtimeEnabled] = useState(true)
   const [tableExists, setTableExists] = useState(true)
   const [createTableSQL, setCreateTableSQL] = useState("")
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [showSummary, setShowSummary] = useState(true)
   const router = useRouter()
 
   // 테이블 존재 여부 확인
@@ -149,6 +155,106 @@ export function UnifiedProjectsView() {
     }
   }
 
+  // 회사별로 필터링된 프로젝트 목록 반환
+  const getFilteredProjects = () => {
+    if (!projectsData || !projectsData.results) return []
+
+    // 먼저 회사명 통합 처리
+    const normalizedProjects = projectsData.results.map((project: any) => {
+      // 회사명 정규화
+      let normalizedCompany = project.company || "-"
+
+      // GS E&R 관련 회사명 통합
+      if (
+        normalizedCompany.includes("GS E&R") ||
+        normalizedCompany.includes("GS동해전력") ||
+        normalizedCompany.includes("포천그린에너지")
+      ) {
+        normalizedCompany = "GS E&R"
+      }
+
+      return {
+        ...project,
+        company: normalizedCompany,
+      }
+    })
+
+    let filtered = normalizedProjects
+
+    // 회사 필터링
+    if (selectedCompany) {
+      filtered = filtered.filter((project: any) => project.company === selectedCompany)
+    }
+
+    // 카테고리 필터링
+    if (selectedCategory) {
+      if (selectedCategory === "planning") {
+        filtered = filtered.filter(
+          (project: any) =>
+            project.stage?.includes("진행후보") ||
+            project.stage?.includes("진행보류") ||
+            project.stage?.includes("진행확정"),
+        )
+      } else if (selectedCategory === "inProgress") {
+        filtered = filtered.filter(
+          (project: any) =>
+            project.stage?.includes("개발") ||
+            project.stage?.includes("Development") ||
+            project.stage?.includes("진행중") ||
+            project.stage?.includes("테스트") ||
+            project.stage?.includes("Testing"),
+        )
+      } else if (selectedCategory === "completed") {
+        filtered = filtered.filter((project: any) => project.stage === "진행완료")
+      }
+    }
+
+    return filtered
+  }
+
+  // 프로젝트 통계 계산 함수
+  const getProjectStats = (projects: any[]) => {
+    if (!projects || projects.length === 0) {
+      return {
+        totalProjects: 0,
+        planningProjects: 0,
+        inProgressProjects: 0,
+        completedProjects: 0,
+      }
+    }
+
+    // 전체 프로젝트 수
+    const totalProjects = projects.length
+
+    // 기획 단계 프로젝트 필터링
+    const planningProjects = projects.filter(
+      (project) =>
+        project.stage?.includes("진행후보") ||
+        project.stage?.includes("진행보류") ||
+        project.stage?.includes("진행확정"),
+    ).length
+
+    // 진행 중인 프로젝트 필터링
+    const inProgressProjects = projects.filter(
+      (project) =>
+        project.stage?.includes("개발") ||
+        project.stage?.includes("Development") ||
+        project.stage?.includes("진행중") ||
+        project.stage?.includes("테스트") ||
+        project.stage?.includes("Testing"),
+    ).length
+
+    // 완료된 프로젝트 필터링
+    const completedProjects = projects.filter((project) => project.stage === "진행완료").length
+
+    return {
+      totalProjects,
+      planningProjects,
+      inProgressProjects,
+      completedProjects,
+    }
+  }
+
   // 테이블이 존재하지 않는 경우
   if (!tableExists) {
     return (
@@ -224,9 +330,22 @@ export function UnifiedProjectsView() {
     )
   }
 
+  const filteredProjects = getFilteredProjects()
+  const stats = getProjectStats(filteredProjects)
+
+  // 퍼센트 계산 (0으로 나누기 방지)
+  const calculatePercent = (value: number, total: number) => {
+    if (total === 0) return 0
+    return Math.round((value / total) * 100)
+  }
+
+  const planningPercent = calculatePercent(stats.planningProjects, stats.totalProjects)
+  const inProgressPercent = calculatePercent(stats.inProgressProjects, stats.totalProjects)
+  const completedPercent = calculatePercent(stats.completedProjects, stats.totalProjects)
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold text-[#2d2d3d]">프로젝트 리스트</h1>
           <div className="flex items-center gap-2 mt-1">
@@ -234,11 +353,47 @@ export function UnifiedProjectsView() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {projectsData && (
+            <CompanyFilter
+              projects={projectsData.results}
+              selectedCompany={selectedCompany}
+              onCompanyChange={setSelectedCompany}
+            />
+          )}
           <RefreshProjectsButton />
         </div>
       </div>
 
-      {projectsData && <ProjectsList projectsData={projectsData} />}
+      {/* 항상 요약 정보 표시 */}
+      <div className="space-y-6 mb-8">
+        <ProjectSummaryCards
+          totalProjects={stats.totalProjects}
+          planningProjects={stats.planningProjects}
+          inProgressProjects={stats.inProgressProjects}
+          completedProjects={stats.completedProjects}
+          title={selectedCompany ? `${selectedCompany} 프로젝트 현황` : "프로젝트 현황"}
+          onCategoryClick={setSelectedCategory}
+        />
+
+        <ProjectDistributionChart
+          planningPercentage={planningPercent}
+          inProgressPercentage={inProgressPercent}
+          completedPercentage={completedPercent}
+          planningCount={stats.planningProjects}
+          inProgressCount={stats.inProgressProjects}
+          completedCount={stats.completedProjects}
+          totalCount={stats.totalProjects}
+        />
+      </div>
+
+      {projectsData && (
+        <ProjectsList
+          projectsData={{
+            ...projectsData,
+            results: filteredProjects,
+          }}
+        />
+      )}
     </div>
   )
 }
