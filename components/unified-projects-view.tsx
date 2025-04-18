@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import ProjectsList from "@/components/projects-list"
-import { Loader2, AlertTriangle, Database, RefreshCw } from "lucide-react"
+import { Loader2, AlertTriangle, Database, RefreshCw, Filter, X } from "lucide-react"
 import { RefreshProjectsButton } from "@/components/refresh-projects-button"
 import { SyncStatus } from "@/components/sync-status"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { CompanyFilter } from "@/components/company-filter"
 import { ProjectSummaryCards } from "@/components/project-summary-cards"
 import { ProjectDistributionChart } from "@/components/project-distribution-chart"
+import { Badge } from "@/components/ui/badge"
 
 export function UnifiedProjectsView() {
   const [projectsData, setProjectsData] = useState<any>(null)
@@ -353,16 +354,58 @@ export function UnifiedProjectsView() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {projectsData && (
-            <CompanyFilter
-              projects={projectsData.results}
-              selectedCompany={selectedCompany}
-              onCompanyChange={setSelectedCompany}
-            />
-          )}
           <RefreshProjectsButton />
         </div>
       </div>
+
+      {/* 필터 영역 */}
+      {projectsData && (
+        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="bg-[#f0f0ff] p-2 rounded-full">
+                <Filter className="h-4 w-4 text-[#a5a6f6]" />
+              </div>
+              <span className="font-medium text-[#4b4b63]">프로젝트 필터</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+              {projectsData && (
+                <div className="w-full sm:w-[250px]">
+                  <CompanyFilter
+                    projects={projectsData.results}
+                    selectedCompany={selectedCompany}
+                    onCompanyChange={setSelectedCompany}
+                  />
+                </div>
+              )}
+
+              {selectedCompany && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedCompany(null)}
+                  className="text-xs h-9 px-3"
+                >
+                  필터 초기화
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {selectedCompany && (
+            <div className="mt-4 pt-4 border-t border-dashed border-[#e9e9f2]">
+              <div className="flex items-center gap-2 text-sm text-[#6e6e85]">
+                <span>적용된 필터:</span>
+                <Badge className="bg-[#f0f0ff] text-[#7b7bf7] font-normal">
+                  회사: {selectedCompany}
+                  <X className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setSelectedCompany(null)} />
+                </Badge>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 항상 요약 정보 표시 */}
       <div className="space-y-6 mb-8">

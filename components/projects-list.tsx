@@ -16,6 +16,7 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  X,
 } from "lucide-react"
 import { Loader2, Database } from "lucide-react"
 import { fetchProjectsData } from "@/app/actions/projects"
@@ -778,7 +779,7 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="p-6 border-b border-[#f0f0f5]">
           <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <div className="relative w-full sm:w-72">
+            <div className="relative w-full sm:w-96">
               <Search className="absolute left-3 top-3 h-4 w-4 text-[#a5a6f6]" />
               <Input
                 placeholder="프로젝트 검색..."
@@ -786,6 +787,16 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1 h-8 w-8 p-0 text-[#6e6e85]"
+                  onClick={() => setSearchTerm("")}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <div className="flex gap-2">
               <DropdownMenu>

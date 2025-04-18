@@ -70,7 +70,7 @@ export function Sidebar() {
             />
             <MenuItem
               icon={<FileBarChart size={20} />}
-              title="주간 리포트"
+              title="프로젝트 현황 리포트"
               href="/reports"
               active={pathname === "/reports"}
               collapsed={collapsed}

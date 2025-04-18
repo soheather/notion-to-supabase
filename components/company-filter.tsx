@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { Building2 } from "lucide-react"
 
 interface CompanyFilterProps {
   projects: any[]
@@ -51,10 +52,13 @@ export function CompanyFilter({ projects, selectedCompany, onCompanyChange }: Co
   }
 
   return (
-    <div className="w-[200px]">
+    <div className="w-full">
       <Select value={selectedCompany || "all"} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-full border-[#e9e9f2] bg-[#f8f8fc] hover:bg-[#f0f0f8]">
-          <SelectValue placeholder="회사 선택" />
+        <SelectTrigger className="w-full border-[#e9e9f2] bg-[#f8f8fc] hover:bg-[#f0f0f8] h-10">
+          <div className="flex items-center">
+            <Building2 className="h-4 w-4 mr-2 text-[#a5a6f6]" />
+            <SelectValue placeholder="회사 선택" />
+          </div>
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">
