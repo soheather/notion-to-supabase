@@ -203,7 +203,7 @@ export default function Dashboard({ notionData }: { notionData: any }) {
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
             <Calendar className="h-6 w-6 text-[#a5a6f6]" />
-            <h2 className="text-xl font-bold text-[#2d2d3d]">년도별 프로젝트 수</h2>
+            <h2 className="text-xl font-bold text-[#2d2d3d]">년도별 프로덕트 수</h2>
           </div>
         </div>
         <YearBarChart data={processedData.yearData} />
