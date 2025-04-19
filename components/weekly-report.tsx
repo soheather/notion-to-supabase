@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -18,7 +18,7 @@ export function WeeklyReportViewer() {
   const [generating, setGenerating] = useState(false)
 
   // 리포트 로드
-  const loadReport = async (date?: string) => {
+  const loadReport = useCallback(async (date?: string) => {
     try {
       setLoading(true)
       setError(null)
@@ -46,10 +46,10 @@ export function WeeklyReportViewer() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   // 리포트 생성 함수
-  const generateReport = async () => {
+  const generateReport = useCallback(async () => {
     try {
       setGenerating(true)
       setError(null)
@@ -75,12 +75,12 @@ export function WeeklyReportViewer() {
     } finally {
       setGenerating(false)
     }
-  }
+  }, [loadReport])
 
   // 컴포넌트 마운트 시 최신 리포트 로드
   useEffect(() => {
     loadReport()
-  }, [])
+  }, [loadReport])
 
   // 날짜 포맷팅 함수
   const formatDate = (dateString: string) => {
@@ -94,14 +94,17 @@ export function WeeklyReportViewer() {
   }
 
   // 리포트 날짜 선택 핸들러
-  const handleReportSelect = (date: string) => {
-    loadReport(date)
-  }
+  const handleReportSelect = useCallback(
+    (date: string) => {
+      loadReport(date)
+    },
+    [loadReport],
+  )
 
   // 리포트 새로고침 핸들러
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     loadReport(report?.reportDate)
-  }
+  }, [loadReport, report?.reportDate])
 
   if (loading) {
     return (

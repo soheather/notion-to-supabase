@@ -75,7 +75,7 @@ export default function ProjectsList({ projectsData }: { projectsData: any }) {
   // 상태 변수 추가 (컴포넌트 시작 부분에 추가)
   // const [showPlanningProjects, setShowPlanningProjects] = useState(false)
   // const [showInProgressProjects, setShowInProgressProjects] = useState(false)
-  // const [showCompletedProjects, setShowCompletedProjects] = useState(false)
+  // const [showCompletedProjects, setShowInProgressProjects] = useState(false)
 
   // projects 상태가 변경될 때마다 통계 데이터 업데이트
   useEffect(() => {
